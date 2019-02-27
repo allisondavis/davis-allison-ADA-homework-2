@@ -1,0 +1,81 @@
+---
+title: "davis-allison-ADA-homework-2"
+author: "Allison Davis"
+date: "February 20, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## MODULE 11
+#### Probabilities and Distributions
+
+### CHALLENGE 1:
+*X = no. calls heard in each session;* *expected mean = lambda = 15*
+
+#### 1a. Pr(X>8) in one session
+
+``` {r}
+1- ppois(q=8, lambda = 15)
+
+```
+
+#### 1b. Pr(X=0) in one session
+
+```{r}
+ppois(q=0, lambda = 15)
+          #OR
+dpois(x=0, lambda = 15)
+
+```
+
+#### 1c. Pr(X=3) in one session
+
+```{r}
+dpois(x=3, lambda = 15)
+
+```
+#### 1d. Plot Poisson mass function with 0 &le; x &le; 30
+
+```{r}
+titi <- dpois(x=0:30, lambda = 15)
+barplot(titi, names.arg = 0:30, space = 0, xlab = "Number of calls heard", ylab = "Probability of calls heard", main = "Probability Mass Function")
+
+```
+
+#### 1e. Simulate 104 results from this distribution.
+
+```{r}
+two_yrs <- rpois(n=104, lambda = 15)
+
+```
+
+#### 1f. Plot simulation using hist() and xlim(), 0-30. Compare to 1d.
+
+```{r}
+par(1, 2)
+
+
+hist(two_yrs, probability = TRUE, main = "Two Years of Field Work", xlab = "Number of titi calls heard", ylab = "Probability of hearing calls") + xlim(0, 30)
+
+titi <- dpois(x=0:30, lambda = 15)
+barplot(titi, names.arg = 0:30, space = 0, xlab = "Number of calls heard", ylab = "Probability of calls heard", main = "Probability Mass Function")
+
+```
+
+### CHALLENGE 2:
+*Zombie apocalypse survivors*
+
+#### 2a. **Population** mean and standard deviation for each quantitative random variable (height, weight, age, number of zombies killed, years of education).
+
+#### 2b. Use {ggplot} to make boxplots of each variable by gender.
+
+#### 2c. Use {ggplot} to make scatterplots of height and weight in relation to age. Are they related? In what way?
+
+#### 2d. Determine which quantitative variables are drawn from normal distribution using histograms and Q-Q plots. 
+  * for those that are not, determine what distribution they're drawn from.
+  
+#### 2e. 
+
