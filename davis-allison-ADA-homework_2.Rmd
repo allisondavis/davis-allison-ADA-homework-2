@@ -58,7 +58,7 @@ two_yrs <- rpois(n=104, lambda = 15)
 par(1, 2)
 
 
-hist(two_yrs, probability = TRUE, main = "Two Years of Field Work", xlab = "Number of titi calls heard", ylab = "Probability of hearing calls") + xlim(0, 30)
+hist(two_yrs, probability = TRUE, xlim = c(0,30), main = "Two Years of Field Work", xlab = "Number of titi calls heard", ylab = "Probability of hearing calls")
 
 titi <- dpois(x=0:30, lambda = 15)
 barplot(titi, names.arg = 0:30, space = 0, xlab = "Number of calls heard", ylab = "Probability of calls heard", main = "Probability Mass Function")
@@ -67,15 +67,107 @@ barplot(titi, names.arg = 0:30, space = 0, xlab = "Number of calls heard", ylab 
 
 ### CHALLENGE 2:
 *Zombie apocalypse survivors*
+```{r}
+library(curl)
+z <- curl("https://raw.githubusercontent.com/difiore/ADA-2019/master/zombies.csv")
 
-#### 2a. **Population** mean and standard deviation for each quantitative random variable (height, weight, age, number of zombies killed, years of education).
+dZ <- read.csv(z, header = TRUE, sep = ",", stringsAsFactors = FALSE)
 
+head(dZ)
+
+```
+
+
+#### 2a. **Population** mean and standard deviation for each quantitative random variable (height, weight, age, number of zombies killed, years of education).qrt
+
+```{r}
+
+(muH <- mean(dZ$height))
+(siH <- sqrt(sum((dZ$height - muH)^2)/1000))
+(muW <- mean(dZ$weight))
+(siW <- sqrt(sum((dZ$weight-muW)^2)/1000))
+(muA <- mean(dZ$age))
+(siA <- sqrt(sum((dZ$age-muA)^2)/1000))
+(muZK <- mean(dZ$zombies_killed))
+(siZK <- sqrt(sum((dZ$zombies_killed-muZK)^2)/1000))
+(muEd <- mean(dZ$years_of_education))
+(siEd <- sqrt(sum((dZ$years_of_education-muEd)^2)/1000))
+
+```
 #### 2b. Use {ggplot} to make boxplots of each variable by gender.
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+H <- ggplot(dZ, aes(x= gender, y= height)) + geom_boxplot() + ggtitle("Survivor Height") + xlab("Gender") + ylab("Height")
+
+
+W <- ggplot(dZ, aes(x= gender, y= weight)) + geom_boxplot() + ggtitle("Survivor Weight") + xlab("Gender") + ylab("Weight")
+
+
+A <- ggplot(dZ, aes(x= gender, y= age)) + geom_boxplot() + ggtitle("Survivor Age") + xlab("Gender") + ylab("Age")
+
+
+ZK <- ggplot(dZ, aes(x= gender, y= zombies_killed)) + geom_boxplot() + ggtitle("Survivor's Kill Count") + xlab("Gender") + ylab("Zombies Killed")
+
+
+Ed <- ggplot(dZ, aes(x= gender, y= years_of_education)) + geom_boxplot() + ggtitle("Survivor Education") + xlab("Gender") + ylab("Years of Education")
+
+grid.arrange(H, W, A, ZK, Ed, ncol=3, nrow=2)
+
+```
 
 #### 2c. Use {ggplot} to make scatterplots of height and weight in relation to age. Are they related? In what way?
 
+```{r}
+H.A <- ggplot(dZ, aes(x=age, y=height)) + geom_point() + ggtitle("Survivor Height by Age") + xlab("Age") + ylab("Height") 
+
+W.A <- ggplot(dZ, aes(x=age, y=weight)) +geom_point() + ggtitle("Survivor Weight by Age") + xlab("Age") + ylab("Weight") 
+
+grid.arrange(H.A, W.A, ncol=2)
+
+```
+  * Both scatterplots appear to have a positive linear correlation, therefore both height and weight are correlated to age. This makes sense since both height and weight increase with development over time. However, weight is not as strongly correlated since resource acquisition can depend on multiple variables, such as skill level or resource availability. 
+
 #### 2d. Determine which quantitative variables are drawn from normal distribution using histograms and Q-Q plots. 
   * for those that are not, determine what distribution they're drawn from.
+  
+```{r}
+attach(dZ)
+par(mfrows= c(5, 2))
+
+qqnorm(height, main = "Normal QQ Plot- Height")
+
+qqline(height, col="red") 
+
+histH <- hist(height, main = "Histogram of Survivor Height")
+
+qqW <- {
+  qqnorm(weight, main = "Normal QQ Plot- Weight")
+  qqline(weight, col="red") }
+
+histW <- hist(weight, main = "Histogram of Survivor Weight")
+
+qqA <- {
+  qqnorm(age, main = "Normal QQ Plot- Age")
+  qqline(age, col="red") }
+
+histA <-  hist(age, main = "Histogram of Survivor Age")
+
+qqZK <- {
+  qqnorm(zombies_killed, main = "Normal QQ Plot- \nZombies Killed")
+  qqline(zombies_killed, col="red") }
+
+histZK <- hist(zombies_killed, main = "Histogram of Number \nof Zombie Kills")
+
+qqEd <- {
+  qqnorm(years_of_education, main = "Normal QQ Plot- \nYears of Education")
+  qqline(years_of_education, col="red") }
+
+histEd <- hist(years_of_education, main = "Histogram of Survivors' \nYears of Education")
+
+```
   
 #### 2e. 
 
