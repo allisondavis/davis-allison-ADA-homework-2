@@ -135,39 +135,79 @@ grid.arrange(H.A, W.A, ncol=2)
   
 ```{r}
 attach(dZ)
-par(mfrows= c(5, 2))
 
-qqnorm(height, main = "Normal QQ Plot- Height")
+par(mfrow= c(1, 2))
 
-qqline(height, col="red") 
+qqH <- {
+  qqnorm(height, main = "Normal QQ Plot- Height")
+  qqline(height, col="red") } 
 
-histH <- hist(height, main = "Histogram of Survivor Height")
+histH <- hist(height, main = "Histogram of Survivor Height", probability = TRUE)
 
 qqW <- {
   qqnorm(weight, main = "Normal QQ Plot- Weight")
   qqline(weight, col="red") }
 
-histW <- hist(weight, main = "Histogram of Survivor Weight")
+histW <- hist(weight, main = "Histogram of Survivor Weight", probability = TRUE)
 
 qqA <- {
   qqnorm(age, main = "Normal QQ Plot- Age")
   qqline(age, col="red") }
 
-histA <-  hist(age, main = "Histogram of Survivor Age")
+histA <-  hist(age, main = "Histogram of Survivor Age", probability = TRUE)
 
 qqZK <- {
   qqnorm(zombies_killed, main = "Normal QQ Plot- \nZombies Killed")
   qqline(zombies_killed, col="red") }
 
-histZK <- hist(zombies_killed, main = "Histogram of Number \nof Zombie Kills")
+histZK <- hist(zombies_killed, main = "Histogram of Number \nof Zombie Kills", probability = TRUE)
 
 qqEd <- {
   qqnorm(years_of_education, main = "Normal QQ Plot- \nYears of Education")
   qqline(years_of_education, col="red") }
 
-histEd <- hist(years_of_education, main = "Histogram of Survivors' \nYears of Education")
+histEd <- hist(years_of_education, main = "Histogram of Survivors' \nYears of Education", probability = TRUE)
 
 ```
-  
-#### 2e. 
+    * For the continuous variables of height, weight, and age, most of the observations do follow a normal distribution, with only the tails deviating from normal. 
+    * Since the zombies killed and age variables are discrete variables, they cannot be normally distributed, as clearly seen in the QQ plots and histograms; both factors are heavily skewed to the left. 
+      - Assuming these survivors use the double-tap rule, zombies are either dead dead or living dead, with a continuous amount of time to be either of these options, so a poisson distribution will fit these data well.
+      - While partial years of education are possible, this data set appear to only consit of whole years. With only a set number of "trials," education is best fit by a binomial distribution.
+    
+#### 2e. Create a single subset of 30 survivors and calculate mean/sd for each variable. Estimate standard error for each variable and construct 95% confidence intervals for each mean. 
+
+```{r}
+library(matrixStats)
+set.seed(1)
+
+alexandria <- dZ[sample(nrow(dZ), size=30, replace=FALSE),]
+
+se <- function(x) {
+  sd(x)/sqrt(length(x))
+}
+
+ci.H <- function(column, data=NULL) {
+  column <- eval(substitute(column), data, parent.frame())
+  qnorm(0.95/2, mean = mean(column), sd = sd(column))
+}
+
+ci.L <- function(column, data=NULL) {
+  column <- eval(substitute(column), data, parent.frame())
+  qnorm(0.05/2, mean = mean(column), sd = sd(column))
+}
+
+a.m <- colMeans(alexandria[,c(5:8,10)])
+a.sd <- apply(alexandria[,c(5:8,10)],2,sd)
+a.se <- apply(alexandria[,c(5:8,10)],2,se)
+a.ci.H <- apply(alexandria[,c(5:8,10)],2,ci.H)
+a.ci.L <- apply(alexandria[,c(5:8,10)],2,ci.L)
+
+alex_Stats <- matrix(c(a.m, a.sd, a.se, a.ci.H, a.ci.L),5,5,byrow = FALSE)
+colnames(alex_Stats) <- c("Mean", "Sd", "Sd.Er.", "CI-High", "CI-Low")
+rownames(alex_Stats) <- c("Height", "Weight", "Age", "Zom.Killed", "Yrs Ed")
+alex_Stats
+
+```
+
+#### 2f. Repeat the previous step to get 100 total samples. Calculate mean/sd of sampling distributions for each variable and compare to mean/sd in *2e*. Describe distributions.
 
