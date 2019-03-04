@@ -211,3 +211,25 @@ alex_Stats
 
 #### 2f. Repeat the previous step to get 100 total samples. Calculate mean/sd of sampling distributions for each variable and compare to mean/sd in *2e*. Describe distributions.
 
+```{r}
+library(dplyr)
+
+k <- 99
+n <- 30
+safe_zone <- NULL
+for (i in 1:k) {
+  safe_zone[[i]] <- dZ[sample(nrow(dZ), size = n, replace = FALSE),]
+}
+head(safe_zone)
+
+m.sZ_H <- NULL
+for (i in 1:k) {
+  m.sZ[i] <- mean(safe_zone[[i]]$height)
+}
+
+sd.sZ <- NULL
+for (i in 1:k) {
+  sd.sZ[i] <- sd(safe_zone[[i]])
+}
+
+```
