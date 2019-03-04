@@ -224,12 +224,14 @@ head(safe_zone)
 
 m.sZ_H <- NULL
 for (i in 1:k) {
-  m.sZ[i] <- mean(safe_zone[[i]]$height)
+  m.sZ_H[i] <- mean(safe_zone[[i]]$height)
 }
 
-sd.sZ <- NULL
-for (i in 1:k) {
-  sd.sZ[i] <- sd(safe_zone[[i]])
-}
+
+#sd.sZ <- NULL
+#for (i in 1:k) {
+  #sd.sZ[i] <- sd(safe_zone[[i]])
+#}
+    #wanted to find a way to do the analysis by columns, but could not figure out how to specify all interger columns and the [[i]] at the same time. 
 
 ```
